@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Geist, Geist_Mono, IBM_Plex_Sans_Thai, Instrument_Serif, Noto_Serif_Thai } from "next/font/google";
+import { Anuphan, Geist, Geist_Mono, Instrument_Serif, Kanit } from "next/font/google";
 import { notFound } from "next/navigation";
 import { getDict } from "@/i18n";
 import { locales, site, type Locale } from "@/site.config";
@@ -9,8 +9,10 @@ const instrument = Instrument_Serif({ subsets: ["latin"], weight: "400", style: 
 const geist = Geist({ subsets: ["latin"], variable: "--font-geist", display: "swap" });
 const geistMono = Geist_Mono({ subsets: ["latin"], variable: "--font-geist-mono", display: "swap" });
 // Thai faces are not preloaded: English pages never request them.
-const thaiSerif = Noto_Serif_Thai({ subsets: ["thai"], weight: ["400", "500"], variable: "--font-thai-serif", display: "swap", preload: false });
-const thaiSans = IBM_Plex_Sans_Thai({ subsets: ["thai"], weight: ["400", "500"], variable: "--font-thai-sans", display: "swap", preload: false });
+// Kanit Light: a loopless Thai display face whose thin strokes sit next to Instrument Serif.
+const thaiDisplay = Kanit({ subsets: ["thai"], weight: "300", variable: "--font-thai-display", display: "swap", preload: false });
+// Anuphan: a loopless Thai text face close to Geist in proportion.
+const thaiSans = Anuphan({ subsets: ["thai"], variable: "--font-thai-sans", display: "swap", preload: false });
 
 export const dynamicParams = false;
 
@@ -57,7 +59,7 @@ export default async function RootLayout({ children, params }: { children: React
   return (
     <html
       lang={lang}
-      className={`${instrument.variable} ${geist.variable} ${geistMono.variable} ${thaiSerif.variable} ${thaiSans.variable}`}
+      className={`${instrument.variable} ${geist.variable} ${geistMono.variable} ${thaiDisplay.variable} ${thaiSans.variable}`}
       suppressHydrationWarning
     >
       <head>

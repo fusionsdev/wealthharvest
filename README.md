@@ -54,8 +54,8 @@ src/
 | sage | `#8c9a8e` | secondary text |
 
 Type: Instrument Serif for display, Geist for text, Geist Mono for labels.
-Thai falls through to Noto Serif Thai and IBM Plex Sans Thai in the same font stacks.
-Thai display sizes are multiplied by `--display-scale: 0.74`.
+Thai falls through to Kanit Light (display) and Anuphan (text) in the same font stacks.
+Thai display sizes are multiplied by `--display-scale: 0.8`.
 
 ## Animation architecture
 
