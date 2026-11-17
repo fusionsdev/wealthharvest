@@ -1,0 +1,218 @@
+@import "tailwindcss";
+
+@theme {
+  --color-ink: #0b0f0c;
+  --color-forest: #12261c;
+  --color-moss: #1e3b2b;
+  --color-ivory: #f1ecdf;
+  --color-champ: #c9b78a;
+  --color-lime: #c8f169;
+  --color-sage: #8c9a8e;
+
+  /* Latin faces come first; Thai glyphs fall through to the Thai face in the same stack. */
+  --font-serif: var(--font-instrument), var(--font-thai-serif), Georgia, serif;
+  --font-sans: var(--font-geist), var(--font-thai-sans), system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), var(--font-thai-sans), ui-monospace, monospace;
+
+  --ease-expo: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@layer base {
+  html {
+    background: var(--color-ink);
+    color: var(--color-ivory);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    scroll-padding-top: 5rem;
+  }
+  html.motion {
+    scroll-behavior: smooth;
+  }
+  body {
+    font-family: var(--font-sans);
+    line-height: 1.5;
+    overflow-x: clip;
+  }
+  :lang(th) body {
+    line-height: 1.7;
+  }
+  ::selection {
+    background: var(--color-lime);
+    color: var(--color-ink);
+  }
+  :focus-visible {
+    outline: 2px solid var(--color-lime);
+    outline-offset: 3px;
+  }
+  .on-ivory :focus-visible {
+    outline-color: var(--color-forest);
+  }
+}
+
+@layer components {
+  /* Mono label: section numbers, metadata, small captions. */
+  .label {
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--color-sage);
+  }
+  :lang(th) .label {
+    letter-spacing: 0.04em;
+    font-size: 0.75rem;
+  }
+
+  /* Editorial display type. Thai needs more leading for its stacked marks. */
+  .display {
+    font-family: var(--font-serif);
+    font-weight: 400;
+    line-height: 0.94;
+    letter-spacing: -0.01em;
+  }
+  :lang(th) .display {
+    line-height: 1.22;
+    letter-spacing: 0;
+  }
+  .accent {
+    font-style: italic;
+    color: var(--color-lime);
+  }
+  :lang(th) .accent {
+    font-style: normal;
+  }
+
+  .pill {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.6rem;
+    min-height: 2.75rem;
+    padding: 0 1.4rem;
+    border-radius: 999px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    white-space: nowrap;
+    transition:
+      background-color 0.25s,
+      color 0.25s,
+      border-color 0.25s;
+  }
+  .pill-solid {
+    background: var(--color-lime);
+    color: var(--color-ink);
+  }
+  .pill-solid:hover {
+    background: var(--color-ivory);
+  }
+  .pill-ghost {
+    border: 1px solid rgb(241 236 223 / 0.35);
+  }
+  .pill-ghost:hover {
+    border-color: var(--color-lime);
+    color: var(--color-lime);
+  }
+  .pill svg {
+    transition: transform 0.4s var(--ease-expo);
+  }
+  .pill:hover svg {
+    transform: translate(2px, -2px);
+  }
+
+  .hairline {
+    border-color: rgb(241 236 223 / 0.14);
+  }
+
+  /* A line of display text that rises out of a mask. */
+  .mask-line {
+    display: block;
+    overflow: hidden;
+    padding-bottom: 0.12em;
+    margin-bottom: -0.12em;
+  }
+  .mask-line > span {
+    display: block;
+  }
+}
+
+/*
+ * Initial states for animated elements. They apply only when the head script
+ * has confirmed that motion is allowed, so content is never hidden for
+ * reduced-motion visitors or when scripts fail to run.
+ */
+html.motion [data-reveal] {
+  opacity: 0;
+  transform: translateY(28px);
+  transition:
+    opacity 0.9s var(--ease-expo) var(--d, 0ms),
+    transform 0.9s var(--ease-expo) var(--d, 0ms);
+}
+html.motion [data-reveal].in {
+  opacity: 1;
+  transform: none;
+}
+html.motion .mask-line > span {
+  transform: translateY(115%);
+  transition: transform 1.1s var(--ease-expo);
+}
+html.motion [data-lines].in .mask-line > span {
+  transform: none;
+}
+html.motion [data-lines].in .mask-line:nth-child(2) > span {
+  transition-delay: 80ms;
+}
+
+/*
+ * The hero animates with CSS keyframes that start at first paint. It does not
+ * wait for scripts, which keeps the headline's paint time (LCP) early.
+ */
+@keyframes rise {
+  from {
+    transform: translateY(115%);
+  }
+}
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(28px);
+  }
+}
+html.motion .hero-in .mask-line > span {
+  transform: none;
+  animation: rise 1.1s var(--ease-expo) 0.1s backwards;
+}
+html.motion .hero-in .mask-line:nth-child(2) > span {
+  animation-delay: 0.18s;
+}
+html.motion [data-hero] {
+  animation: fade-up 0.9s var(--ease-expo) calc(var(--i, 0) * 90ms + 0.35s) backwards;
+}
+html.motion [data-word] {
+  opacity: 0.16;
+}
+
+.no-scrollbar {
+  scrollbar-width: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/*
+ * Thai display type. Thai letterforms are wider and taller than the Latin
+ * serif, so headings scale down, drop the Latin character-count widths and
+ * balance their line breaks. Unlayered on purpose: these rules must win over
+ * utility classes.
+ */
+:root {
+  --display-scale: 1;
+}
+:lang(th) {
+  --display-scale: 0.74;
+}
+:lang(th) .display {
+  text-wrap: balance;
+}
+:lang(th) h2.display {
+  max-width: 15em;
+}
