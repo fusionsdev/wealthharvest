@@ -10,7 +10,7 @@
   --color-sage: #8c9a8e;
 
   /* Latin faces come first; Thai glyphs fall through to the Thai face in the same stack. */
-  --font-serif: var(--font-instrument), var(--font-thai-serif), Georgia, serif;
+  --font-serif: var(--font-instrument), var(--font-thai-display), Georgia, serif;
   --font-sans: var(--font-geist), var(--font-thai-sans), system-ui, sans-serif;
   --font-mono: var(--font-geist-mono), var(--font-thai-sans), ui-monospace, monospace;
 
@@ -71,8 +71,8 @@
     letter-spacing: -0.01em;
   }
   :lang(th) .display {
-    line-height: 1.22;
-    letter-spacing: 0;
+    line-height: 1.16;
+    letter-spacing: -0.005em;
   }
   .accent {
     font-style: italic;
@@ -208,11 +208,16 @@ html.motion [data-word] {
   --display-scale: 1;
 }
 :lang(th) {
-  --display-scale: 0.74;
+  --display-scale: 0.8;
 }
 :lang(th) .display {
   text-wrap: balance;
 }
 :lang(th) h2.display {
   max-width: 15em;
+}
+
+/* Thai paragraphs: avoid leaving a single short word or repetition mark on the last line. */
+:lang(th) p {
+  text-wrap: pretty;
 }
